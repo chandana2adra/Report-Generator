@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sales Report Generator</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Arial; text-align: center; }
+    canvas { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Upload JSON for Report</h1>
+  <input type="file" id="fileInput" accept=".json" onchange="processFile(event)">
+  <canvas id="salesChart" width="600" height="400"></canvas>
+  <script>
+    function processFile(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const jsonData = JSON.parse(e.target.result);
+          generateReport(jsonData);
+        } catch (error) {
+          alert("Invalid JSON ra—correct format lo upload cheyyi!");
+        }
+      };
+      reader.readAsText(file);
+    }
+    function generateReport(jsonData) {
+      const ctx = document.getElementById('salesChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: jsonData.map(item => item.Date),
+          datasets: [{
+            label: 'Sales',
+            data: jsonData.map(item => item.Sales),
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: { scales: { y: { beginAtZero: true } } }
+      });
+    }
+  </script>
+</body>
+</html>
